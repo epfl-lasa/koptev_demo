@@ -28,7 +28,8 @@ RUN rm -rf /tmp/*
 RUN pip3 install pyzmq
 
 # Install ds_mppi with PyEnv
-
 WORKDIR ${HOME}
+COPY --chown=${USER} ./ds_mppi ./ds_mppi
+RUN sudo pip install torch==1.13.1 scipy pybullet
 
 ENTRYPOINT /bin/bash

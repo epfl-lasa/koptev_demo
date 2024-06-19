@@ -1,0 +1,3 @@
+[submodule "dependencies/franka-lightweight-interface"]
+	path = dependencies/franka-lightweight-interface
+	url = git@github.com:epfl-lasa/franka-lightweight-interface.git
