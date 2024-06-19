@@ -71,12 +71,12 @@ if [ "${MODE}" != "connect" ]; then
     fi
 
     # Check if a NVIDIA GPU is available
-    if [[ $(sudo lshw -C display | grep vendor) =~ NVIDIA ]]; then
-        USE_NVIDIA_TOOLKIT=true
-        echo "Detected NVIDIA graphic card, giving access to the container."
-    else
-        USE_NVIDIA_TOOLKIT=false
-    fi
+    # if [[ $(sudo lshw -C display | grep vendor) =~ NVIDIA ]]; then
+    #     USE_NVIDIA_TOOLKIT=true
+    #     echo "Detected NVIDIA graphic card, giving access to the container."
+    # else
+    #     USE_NVIDIA_TOOLKIT=false
+    # fi
 
     # network for ros
     FWD_ARGS+=(--net=host)
@@ -91,7 +91,6 @@ if [ "${MODE}" != "connect" ]; then
 
     # Other
     FWD_ARGS+=("--privileged")
-
 
     # Add volumes for airhockey, toolkit, data, python and docker
     FWD_ARGS+=(--volume="${PWD}/dependencies/franka_zmq_bridge:/home/developer/franka_zmq_bridge:rw")

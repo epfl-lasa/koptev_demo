@@ -20,7 +20,7 @@ RUN cd control-libraries/protocol && ./install.sh --auto
 RUN pip3 install control-libraries/python
 
 RUN git clone -b v1.1.0 --depth 1 https://github.com/aica-technology/network-interfaces
-RUN cd network-interfaces/cpp && mkdir build && cd build && cmake .. && sudo make install
+RUN cd network-interfaces && sudo bash install.sh --auto --no-cpp
 
 RUN rm -rf /tmp/*
 
@@ -28,5 +28,7 @@ RUN rm -rf /tmp/*
 RUN pip3 install pyzmq
 
 # Install ds_mppi with PyEnv
+
+WORKDIR ${HOME}
 
 ENTRYPOINT /bin/bash
