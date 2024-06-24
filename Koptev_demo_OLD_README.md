@@ -86,6 +86,12 @@ source_dsmod
 python3 frankaPlanner.py
 ```
 
+## Sources 
+Code originally comes from these repos and has been restructured to be easily used : 
+
+https://github.com/epfl-lasa/OptimalModulationDS
+https://github.com/m-koptev/franka_zmq_bridge
+https://github.com/m-koptev/optitrack_lasa
 
 ### Old instructions 
 

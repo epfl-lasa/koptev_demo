@@ -30,6 +30,8 @@ RUN pip3 install pyzmq
 # Install ds_mppi with PyEnv
 WORKDIR ${HOME}
 COPY --chown=${USER} ./ds_mppi ./ds_mppi
-RUN sudo pip install torch==1.13.1 scipy pybullet
+COPY --chown=${USER} ./dependencies/franka_zmq_bridge ./franka_zmq_bridge
+
+RUN sudo pip install torch==1.13.1 scipy pybullet pillow matplotlib
 
 ENTRYPOINT /bin/bash

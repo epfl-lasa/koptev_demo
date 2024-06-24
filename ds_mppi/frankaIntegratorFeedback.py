@@ -7,7 +7,7 @@ import yaml
 from LinDS import *
 from SEDS import *
 
-sys.path.append('../mlp_learn/')
+sys.path.append('sdf/')
 from sdf.robot_sdf import RobotSdfCollisionNet
 
 # define tensor parameters (cpu or cuda:0 or mps)
