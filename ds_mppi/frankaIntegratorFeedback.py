@@ -15,7 +15,8 @@ params = {'device': 'cpu', 'dtype': torch.float32}
 
 def main_loop():
 
-    with open('config_real.yaml') as file:
+    # with open('config_real.yaml') as file:
+    with open('config.yaml') as file:
         config = yaml.load(file, Loader=yaml.FullLoader)
 
     ########################################
@@ -27,9 +28,11 @@ def main_loop():
 
 
     # socket to receive data from robot
-    ip_pc = '128.178.145.38'
+    # ip_pc = '128.178.145.38'
     #ip_pc = '128.178.145.5'
-    socket_receive_robot = init_subscriber(context, ip_pc, 6969)
+    ip_pc = 'localhost'
+    # socket_receive_robot = init_subscriber(context, ip_pc, 6969)
+    socket_receive_robot = init_subscriber(context, ip_pc, config["zmq"]["receive_state_port"])
 
     # socket to publish data to slow loop
     socket_send_state = init_publisher(context, '*', config["zmq"]["state_port"])
@@ -51,7 +54,8 @@ def main_loop():
     # Load nn model
     fname = config["collision_model"]["fname"]
     nn_model = RobotSdfCollisionNet(in_channels=DOF+3, out_channels=9, layers=[256] * 4, skips=[])
-    nn_model.load_weights('../mlp_learn/models/' + fname, params)
+    nn_model.load_weights('./models/' + fname, params)
+    # nn_model.load_weights('../mlp_learn/models/' + fname, params)
     nn_model.model.to(**params)
 
     # prepare models: standard (used for AOT implementation), jit, jit+quantization
@@ -100,6 +104,7 @@ def main_loop():
     while not init_pos_status:
         q_init, init_pos_status = zmq_try_recv(None, socket_receive_robot)
         time.sleep(0.01)
+    print("Init pos OK - qinit: ", q_init)
     mppi_step.q_cur = torch.tensor(q_init).to(**params)
 
     while True:
@@ -118,6 +123,8 @@ def main_loop():
 
             # [ZMQ] Receive policy from planner
             policy_data, policy_recv_status = zmq_try_recv(policy_data, socket_receive_policy)
+            if policy_recv_status:
+                print(f"recevie policy status {policy_recv_status}  - data: {policy_data} ")
             mppi_step.Policy.update_with_data(policy_data)
             # [ZMQ] Receive obstacles
             obstacles_data, obs_recv_status = zmq_try_recv(mppi_step.obs, socket_receive_obs)
@@ -136,6 +143,8 @@ def main_loop():
             mppi_step.q_cur = q_des
             state_dict = {'q': q_des, 'dq': dq_des, 'ds_idx': mppi_step.DS_idx}
             socket_send_state.send_pyobj(state_dict)
+
+            print(f"-------------- state sends status {q_des} \n \n")
             N_ITER_TOTAL += 1
             N_ITER_TRAJ += 1
             t_traj = time.time() - t_traj_start

@@ -4,7 +4,7 @@ from isaac_gym_helpers import *
 from MPPI import *
 import torch
 
-sys.path.append('../mlp_learn/')
+# sys.path.append('../mlp_learn/')
 from sdf.robot_sdf import RobotSdfCollisionNet
 
 # define tensor parameters (cpu or cuda:0)
@@ -31,7 +31,7 @@ def main_loop(gym_instance):
     if skips == []:
         n_layers -= 1
     nn_model = RobotSdfCollisionNet(in_channels=DOF+3, out_channels=9, layers=[s] * n_layers, skips=skips)
-    nn_model.load_weights('../mlp_learn/models/' + fname, params)
+    nn_model.load_weights('./models/' + fname, params)
     nn_model.model.to(**params)
     # prepare models: standard (used for AOT implementation), jit, jit+quantization
     nn_model.model_jit = nn_model.model

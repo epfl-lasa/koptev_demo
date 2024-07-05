@@ -7,7 +7,8 @@ import copy
 
 sys.path.append('../functions/')
 from MPPI_toy import *
-sys.path.append('../../mlp_learn/')
+# sys.path.append('../../mlp_learn/')
+sys.path.append('../models/')
 from sdf.robot_sdf import RobotSdfCollisionNet
 
 # define tensor parameters (cpu or cuda:0)
@@ -30,7 +31,7 @@ def main_int():
     if skips == []:
         n_layers -= 1
     nn_model = RobotSdfCollisionNet(in_channels=DOF+2, out_channels=1, layers=[s] * n_layers, skips=skips)
-    nn_model.load_weights('../../mlp_learn/models/' + fname, params)
+    nn_model.load_weights('../models/' + fname, params)
     nn_model.model.to(**params)
     # prepare models: standard (used for AOT implementation), jit, jit+quantization
     nn_model.model_jit = nn_model.model

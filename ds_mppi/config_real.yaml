@@ -31,6 +31,7 @@ zmq:
   state_port: 1336
   policy_port: 1338
   obstacle_port: 1339
+  receive_state_port: 6969
 
 planner:
   # sampling params

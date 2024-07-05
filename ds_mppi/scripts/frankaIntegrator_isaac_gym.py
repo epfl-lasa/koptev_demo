@@ -7,7 +7,7 @@ import torch
 from zmq_utils import *
 
 
-sys.path.append('../mlp_learn/')
+# sys.path.append('../mlp_learn/')
 from sdf.robot_sdf import RobotSdfCollisionNet
 
 # define tensor parameters (cpu or cuda:0 or mps)
@@ -51,7 +51,7 @@ def main_loop(gym_instance):
     # Load nn model
     fname = config["collision_model"]["fname"]
     nn_model = RobotSdfCollisionNet(in_channels=DOF+3, out_channels=9, layers=[256] * 4, skips=[])
-    nn_model.load_weights('../mlp_learn/models/' + fname, params)
+    nn_model.load_weights('./models/' + fname, params)
     nn_model.model.to(**params)
 
     # prepare models: standard (used for AOT implementation), jit, jit+quantization

@@ -13,7 +13,8 @@ from zmq_utils import *
 
 
 def main_loop():
-    with open('config_real.yaml') as file:
+    # with open('config_real.yaml') as file:
+    with open('config.yaml') as file:
         config = yaml.load(file, Loader=yaml.FullLoader)
 
 
@@ -38,10 +39,17 @@ def main_loop():
     base_rot = p.getQuaternionFromEuler([0, 0, 0])
     panda = PandaSim(p, base_pos, base_rot)
 
+    joint_pos = panda.get_joint_positions()
     ########################################
     ###            ZMQ SETUP             ###
     ########################################
     context = zmq.Context()
+
+    # socket to stream position (used if only simulation)
+    socket_send_state = init_publisher(context, '*', config["zmq"]["receive_state_port"])
+    # print("joint pos", joint_pos)
+    socket_send_state.send_pyobj(joint_pos)
+
 
     # socket to receive state from integrator
     socket_receive_state = init_subscriber(context, 'localhost', config["zmq"]["state_port"])
@@ -67,6 +75,10 @@ def main_loop():
     desired_frequency = config["simulator"]["max_frequency"]
     while True:
         t_iter_begin = time.time()
+        # send joint pos
+        joint_pos = panda.get_joint_positions()
+        socket_send_state.send_pyobj(joint_pos)
+
         # [ZMQ] Receive obstacles
         obs, obs_recv_status = zmq_try_recv(obs, socket_receive_obs)
         sphere_manager.update_spheres(obs)
@@ -88,8 +100,10 @@ def main_loop():
             policy_data = None
         # [ZMQ] Receive state from integrator
         state_dict, state_recv_status = zmq_try_recv(state, socket_receive_state)
+
         if state_recv_status:
             state = state_dict['q']
+            # print("Receive state: ", state)
         panda.set_joint_positions(state)
         p.stepSimulation()
         t_iter_end = time.time()

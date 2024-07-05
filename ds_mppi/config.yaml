@@ -1,7 +1,7 @@
 collision_model:
   fname: "franka_collision_model.pt"
   closest_spheres: 5
-  obstacle: "wall"
+  obstacle: "tshape"
 
 general:
   # Initial state
@@ -27,6 +27,7 @@ zmq:
   state_port: 1336
   policy_port: 1338
   obstacle_port: 1339
+  receive_state_port: 6969
 
 planner:
   # sampling params

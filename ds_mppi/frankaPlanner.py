@@ -42,7 +42,7 @@ def main_loop():
     # Load nn model
     fname = config["collision_model"]["fname"]
     nn_model = RobotSdfCollisionNet(in_channels=DOF+3, out_channels=9, layers=[256] * 4, skips=[])
-    nn_model.load_weights('../mlp_learn/models/' + fname, params)
+    nn_model.load_weights('./models/' + fname, params)
     nn_model.model.to(**params)
     # prepare models: standard (used for AOT implementation), jit, jit+quantization
     nn_model.model_jit = nn_model.model
@@ -102,6 +102,7 @@ def main_loop():
         # [ZMQ] Receive state from integrator
         state_dict, state_recv_status = zmq_try_recv(mppi.q_cur, socket_receive_state)
         if state_recv_status:
+            # print(f"state rec status ok - state: {mppi.q_cur}")
             mppi.q_cur = state_dict['q']
             # if (mppi.q_cur - q_0).norm().numpy() < 1e-6 and N_ITER > 5:
             #     print('Resetting policy')
