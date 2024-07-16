@@ -29,8 +29,8 @@ def main_loop():
 
     # socket to receive data from robot
     # ip_pc = '128.178.145.38'
-    #ip_pc = '128.178.145.5'
-    ip_pc = 'localhost'
+    ip_pc = config["zmq"]["panda_pc_ip"]
+    #ip_pc = 'localhost'
     # socket_receive_robot = init_subscriber(context, ip_pc, 6969)
     socket_receive_robot = init_subscriber(context, ip_pc, config["zmq"]["receive_state_port"])
 

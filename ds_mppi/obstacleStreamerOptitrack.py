@@ -106,8 +106,8 @@ def main_loop():
     socket_send_obs = init_publisher(context, '*', config["zmq"]["obstacle_port"])
 
     # socket to receive data from optitrack (pc1)
-    socket_receive_optitrack = init_subscriber(context, '128.178.145.38', 5511)
-    # socket_receive_optitrack = init_subscriber(context, '0.0.0.0', 5511)
+    # socket_receive_optitrack = init_subscriber(context, '128.178.145.38', 5511)
+    socket_receive_optitrack = init_subscriber(context, '0.0.0.0', 5511)
 
 
     # socket to receive data from optitrack (pc2)

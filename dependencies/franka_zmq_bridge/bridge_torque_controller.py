@@ -11,8 +11,8 @@ from zmq_utils import *
 np.set_printoptions(precision=2, suppress=True)
 
 # zmq parameters
-state_address = "*:1701"
-command_address = "*:1702"
+state_address = "*:1601"
+command_address = "*:1602"
 context = zmq.Context(1)
 
 subscriber = network.configure_subscriber(context, state_address, True)
@@ -23,9 +23,11 @@ command.control_type = [network.ControlType.EFFORT.value]
 
 #mac_ip = "128.179.133.49"  # wifi
 #mac_ip = "128.178.145.71"  # cable
-mac_ip = "128.178.145.38"
+# mac_ip = "128.178.145.38"
+samurai_ip = "128.178.145.51"
+panda_pc = "128.178.145.38"
 # zmq receive state from controller
-socket_recieve_sim_state = init_subscriber(context, mac_ip, 1336)
+socket_recieve_sim_state = init_subscriber(context, samurai_ip, 1336)
 
 # zmq send state to controller
 socket_send_robot_state = init_publisher(context, "*", 6969)

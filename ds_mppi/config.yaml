@@ -24,6 +24,7 @@ general:
 
 zmq:
   # ZMQ params
+  panda_pc_ip : 128.178.145.78
   state_port: 1336
   policy_port: 1338
   obstacle_port: 1339
