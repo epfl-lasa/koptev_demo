@@ -71,12 +71,12 @@ if [ "${MODE}" != "connect" ]; then
     fi
 
     # Check if a NVIDIA GPU is available
-    # if [[ $(sudo lshw -C display | grep vendor) =~ NVIDIA ]]; then
-    #     USE_NVIDIA_TOOLKIT=true
-    #     echo "Detected NVIDIA graphic card, giving access to the container."
-    # else
-    #     USE_NVIDIA_TOOLKIT=false
-    # fi
+    if [[ $(sudo lshw -C display | grep vendor) =~ NVIDIA ]]; then
+        USE_NVIDIA_TOOLKIT=true
+        echo "Detected NVIDIA graphic card, giving access to the container."
+    else
+        USE_NVIDIA_TOOLKIT=false
+    fi
 
     # network for ros
     FWD_ARGS+=(--net=host)

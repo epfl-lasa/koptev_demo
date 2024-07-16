@@ -239,11 +239,11 @@ class MPPI:
             mindist_arr = sort_dist[:, 0:self.n_closest_obs]
             sphere_idx_arr = sort_idx[:, 0:self.n_closest_obs]
             #mask_idx = self.traj_range[:n_inputs] + sphere_idx * n_inputs
-            mask_idx = torch.arange(n_inputs) + sphere_idx * n_inputs
+            mask_idx = torch.arange(n_inputs).to(**self.tensor_args) + sphere_idx * n_inputs
             #nn_input = nn_input[mask_idx, :]
 
-            new_mask_idx = torch.arange(n_inputs).unsqueeze(1).repeat(1, self.n_closest_obs) + sphere_idx_arr * n_inputs
-            nn_input = nn_input[new_mask_idx.flatten(), :]
+            new_mask_idx = torch.arange(n_inputs).to(**self.tensor_args).unsqueeze(1).repeat(1, self.n_closest_obs) + sphere_idx_arr * n_inputs
+            nn_input = nn_input[new_mask_idx.flatten().to(torch.long), :]
 
         with record_function("TAG: evaluate NN_4 (forward+backward pass)"):
             # forward + backward pass to get gradients for closest obstacles

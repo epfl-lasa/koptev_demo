@@ -15,7 +15,8 @@ def read_yaml(fname):
 
 # define tensor parameters (cpu or cuda:0 or mps)
 params = {'device': 'cpu', 'dtype': torch.float32}
-
+# NEEDED TO USE GPU -> create all tensors on GPU 
+# torch.set_default_tensor_type('torch.cuda.FloatTensor')
 
 def get_ball_pos(bodies, radius):
     for body in bodies:
@@ -103,11 +104,11 @@ def main_loop():
     ########################################
     context = zmq.Context()
     # socket to publish obstacles
-    socket_send_obs = init_publisher(context, '*', config["zmq"]["obstacle_port"])
+    socket_send_obs = init_publisher(context, 'localhost' , config["zmq"]["obstacle_port"])
 
     # socket to receive data from optitrack (pc1)
     # socket_receive_optitrack = init_subscriber(context, '128.178.145.38', 5511)
-    socket_receive_optitrack = init_subscriber(context, '0.0.0.0', 5511)
+    socket_receive_optitrack = init_subscriber(context, '0.0.0.0', 5511) 
 
 
     # socket to receive data from optitrack (pc2)
