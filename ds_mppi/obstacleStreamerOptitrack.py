@@ -18,10 +18,28 @@ params = {'device': 'cpu', 'dtype': torch.float32}
 # NEEDED TO USE GPU -> create all tensors on GPU 
 # torch.set_default_tensor_type('torch.cuda.FloatTensor')
 
-def get_ball_pos(bodies, radius):
+def get_robot_pos(bodies):
     for body in bodies:
-        if body['id'] == 1001 or 1:
-            return torch.hstack([body['pos'], torch.tensor(radius)])
+        print(f"optitrack ID {body['id']}")
+        print(f"optitrack is ID 1096 {body['id'] == 1096}")
+        if body['id'] == 1096: # or 1:
+            print(f"optitrack ROBOT {body['pos']}")
+            return body['pos']
+    return torch.tensor([5.5629, -0.1130,  0.4499])
+
+def get_ball_pos(bodies, radius, robot_pos):
+    for body in bodies:
+        print(f"optitrack ID {body['id']}")
+        print(f"optitrack is ID 1001 {body['id'] == 1001}")
+        if body['id'] == 1001: # or 1:
+            print(f"optitrack BALL {body['pos']}")
+            print(f"optitrack BALL - robot {body['pos'] - robot_pos}")
+            ball_frame_corrected = body['pos'] - robot_pos
+            ball_frame_corrected_final = torch.tensor([-ball_frame_corrected[0],
+                                                       ball_frame_corrected[2],
+                                                       ball_frame_corrected[1]])
+            print(f"optitrack  ball_frame_corrected {ball_frame_corrected_final}")
+            return torch.hstack([ball_frame_corrected_final, torch.tensor(radius)])
     return torch.tensor([10, 10, 10, torch.tensor(radius)])
 
 
@@ -154,6 +172,9 @@ def main_loop():
         # get robot state
         optitrack_data, optitrack_recv_status = zmq_try_recv_raw(None, socket_receive_optitrack)
 
+        print(f"optitrack status {optitrack_recv_status}")
+        # print(f"optitrack optitrack_data {optitrack_data}")
+
         if optitrack_recv_status:
             bodies = process_raw_message(optitrack_data, params)
             # print(bodies)
@@ -166,7 +187,9 @@ def main_loop():
                         obs = human_spheres
                         moved = True
                 else:
-                    obs[0] = get_ball_pos(bodies, 0.2)
+                    robot_pos = get_robot_pos(bodies)
+                    obs[0] = get_ball_pos(bodies, 0.2, robot_pos)
+
 
         socket_send_obs.send_pyobj(obs)
         time.sleep(1/freq)
