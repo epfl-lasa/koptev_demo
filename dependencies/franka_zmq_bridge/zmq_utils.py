@@ -55,5 +55,13 @@ def init_subscriber_binding(context, address, port):
 
 def init_publisher(context, address, port):
     socket = context.socket(zmq.PUB)
-    socket.bind("tcp://%s:%s" % (address, str(port)))
+    try:
+        socket.bind("tcp://%s:%s" % (address, str(port)))  # Binding to all interfaces
+        print(f"Publisher bound to tcp://0.0.0.0:{port}")
+    except zmq.ZMQError as e:
+        print(f"Failed to bind to address tcp://{address}:{port} - {e}")
     return socket
+    
+    #socket = context.socket(zmq.PUB)
+    #socket.bind("tcp://%s:%s" % (address, str(port)))
+    #return socket

@@ -6,8 +6,8 @@ import zmq
 from network_interfaces.zmq import network
 
 np.set_printoptions(precision=2, suppress=True)
-state_address = "*:1601"
-command_address = "*:1602"
+state_address = "*:1701"
+command_address = "*:1702"
 context = zmq.Context(1)
 
 subscriber = network.configure_subscriber(context, state_address, True)

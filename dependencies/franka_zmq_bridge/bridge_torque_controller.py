@@ -11,8 +11,8 @@ from zmq_utils import *
 np.set_printoptions(precision=2, suppress=True)
 
 # zmq parameters
-state_address = "*:1601"
-command_address = "*:1602"
+state_address = "*:1701"
+command_address = "*:1702"
 context = zmq.Context(1)
 
 subscriber = network.configure_subscriber(context, state_address, True)
@@ -24,13 +24,15 @@ command.control_type = [network.ControlType.EFFORT.value]
 #mac_ip = "128.179.133.49"  # wifi
 #mac_ip = "128.178.145.71"  # cable
 # mac_ip = "128.178.145.38"
-samurai_ip = "128.178.145.51"
-panda_pc = "128.178.145.38"
+rtx_4090_ip = "128.178.145.74"
+panda_pc = "128.178.145.78"
 # zmq receive state from controller
-socket_recieve_sim_state = init_subscriber(context, samurai_ip, 1336)
+socket_recieve_sim_state = init_subscriber(context, rtx_4090_ip, 1336)
 
 # zmq send state to controller
-socket_send_robot_state = init_publisher(context, "*", 6969)
+# socket_send_robot_state = init_publisher(context, samurai_ip, 6969)
+socket_send_robot_state = init_publisher(context, '0.0.0.0', 6969)
+
 
 # Define controller and set gains
 controller = create_joint_controller(CONTROLLER_TYPE.IMPEDANCE, 7)
@@ -71,9 +73,10 @@ smoothing = 0
 while True:
     robot_state = network.receive_state(subscriber)
     sim_state, sim_state_status = zmq_try_recv(None, socket_recieve_sim_state)
+    print(f"robot_state statsu {robot_state}")
     if sim_state_status:
         # print("Sim stuff!")
-        # print(sim_state.numpy())
+        # print(sim_state)
         q_desired = sim_state["q"].numpy()
         dq_desired = smoothing * dq_desired + (1 - smoothing) * sim_state["dq"].numpy()
         last_command_time = time.time()

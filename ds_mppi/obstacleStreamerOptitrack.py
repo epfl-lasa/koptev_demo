@@ -107,6 +107,12 @@ def main_loop():
 
     # socket to receive data from optitrack (pc1)
     # socket_receive_optitrack = init_subscriber(context, '128.178.145.38', 5511)
+    # socket_receive_optitrack = init_subscriber(context, '0.0.0.0', 5511)
+    
+    # socket_receive_optitrack = init_subscriber(context, '128.178.145.104', 5511)
+    # socket_receive_optitrack = init_subscriber(context, '128.178.145.104', 1511)
+    # socket_receive_optitrack = init_subscriber(context, '239.255.42.99', 1511)
+    # socket_receive_optitrack = init_subscriber(context, '0.0.0.0', 5511)
     socket_receive_optitrack = init_subscriber(context, '0.0.0.0', 5511)
 
 
@@ -153,6 +159,8 @@ def main_loop():
         # get robot state
         optitrack_data, optitrack_recv_status = zmq_try_recv_raw(None, socket_receive_optitrack)
 
+        print(f"OPTITRACK STATUS : {optitrack_recv_status}")
+        print(f"OPTITRACK optitrack_data : {optitrack_data}")
         if optitrack_recv_status:
             bodies = process_raw_message(optitrack_data, params)
             # print(bodies)
@@ -167,6 +175,7 @@ def main_loop():
                 else:
                     obs[0] = get_ball_pos(bodies, 0.2)
 
+                print("BALL : ", bodies)
         socket_send_obs.send_pyobj(obs)
         time.sleep(1/freq)
         N_ITER += 1
