@@ -126,17 +126,7 @@ def main_loop():
 
     # socket to receive data from optitrack (pc1)
     # socket_receive_optitrack = init_subscriber(context, '128.178.145.38', 5511)
-<<<<<<< HEAD
-    # socket_receive_optitrack = init_subscriber(context, '0.0.0.0', 5511)
-    
-    # socket_receive_optitrack = init_subscriber(context, '128.178.145.104', 5511)
-    # socket_receive_optitrack = init_subscriber(context, '128.178.145.104', 1511)
-    # socket_receive_optitrack = init_subscriber(context, '239.255.42.99', 1511)
-    # socket_receive_optitrack = init_subscriber(context, '0.0.0.0', 5511)
-    socket_receive_optitrack = init_subscriber(context, '0.0.0.0', 5511)
-=======
     socket_receive_optitrack = init_subscriber(context, '0.0.0.0', 5511) 
->>>>>>> 978bdda1b912eb7ddda3c5e1725b2295ee4b07b3
 
 
     # socket to receive data from optitrack (pc2)
@@ -182,14 +172,9 @@ def main_loop():
         # get robot state
         optitrack_data, optitrack_recv_status = zmq_try_recv_raw(None, socket_receive_optitrack)
 
-<<<<<<< HEAD
-        print(f"OPTITRACK STATUS : {optitrack_recv_status}")
-        print(f"OPTITRACK optitrack_data : {optitrack_data}")
-=======
         # print(f"optitrack status {optitrack_recv_status}")
         # print(f"optitrack optitrack_data {optitrack_data}")
 
->>>>>>> 978bdda1b912eb7ddda3c5e1725b2295ee4b07b3
         if optitrack_recv_status:
             bodies = process_raw_message(optitrack_data, params)
             # print(bodies)
