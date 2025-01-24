@@ -4,14 +4,18 @@ This code comes from several repositories and has been re-structured to be used 
 
 ## Structure 
 This demo uses 3 dockers :
-- franka-lightweight-interface: to be run on the computer connected to the panda, used to communicate with the robot
+- franka-lightweight-interface: to be run on the computer connected to the panda (called PANDA_PC), used to communicate with the robot
 - optitrack : used to publish optitrack info using zmq, should be run on SAMURAI
 - koptev-demo : used to run all python code from Mikhail, should be run on SAMURAI (except franka_zmq_bridge which MAY need to be run on computer connected to panda)
 
 Note : docker commands rely on [aica-docker scripts](https://github.com/aica-technology/docker-images) which should be installed on compputers sued for the demo.
 
 ## TODO 
+<<<<<<< HEAD
+- document which adresses need changing (add to config.yaml : zmq: IP: optitrack_PC, SAMURAI, panda_PC, link them in ds_mppi scripts )
+=======
 - document which adresses need changing (add to config.yaml : zmq: IP: o SAMURAI, panda_PC, link them in ds_mppi scripts )
+>>>>>>> 978bdda1b912eb7ddda3c5e1725b2295ee4b07b3
 - load config.yaml in bridge_torque_controller.py (or modif code directly)
 - check if possible to run bridge_torque_controller on samurai and communicate with fwli 
 - remove config_real if not relevant
@@ -29,7 +33,7 @@ Make sure the IP adresses are correct and communication runs smoothly. These can
 Then run the following commands.
 
 ### Terminal 1 - Connect to the robot
-On Panda_PC
+On PANDA_PC
 ```console
 cd ~/Workspace/koptev_demo/dependencies/franka-lightweight-interface
 bash run-rt.sh
@@ -53,7 +57,7 @@ bash docker/start-docker.sh
 ```
 
 ### Terminal 3 - Torque control bridge for robot
-On SAMURAI
+On PANDA_PC
 ```console
 cd ~/Workspace/koptev_demo
 bash docker/start-docker.sh -m connect
