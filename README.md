@@ -11,7 +11,11 @@ This demo uses 3 dockers :
 Note : docker commands rely on [aica-docker scripts](https://github.com/aica-technology/docker-images) which should be installed on compputers sued for the demo.
 
 ## TODO 
+<<<<<<< HEAD
 - document which adresses need changing (add to config.yaml : zmq: IP: optitrack_PC, SAMURAI, panda_PC, link them in ds_mppi scripts )
+=======
+- document which adresses need changing (add to config.yaml : zmq: IP: o SAMURAI, panda_PC, link them in ds_mppi scripts )
+>>>>>>> 978bdda1b912eb7ddda3c5e1725b2295ee4b07b3
 - load config.yaml in bridge_torque_controller.py (or modif code directly)
 - check if possible to run bridge_torque_controller on samurai and communicate with fwli 
 - remove config_real if not relevant

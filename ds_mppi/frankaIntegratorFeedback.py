@@ -11,12 +11,16 @@ sys.path.append('sdf/')
 from sdf.robot_sdf import RobotSdfCollisionNet
 
 # define tensor parameters (cpu or cuda:0 or mps)
-params = {'device': 'cpu', 'dtype': torch.float32}
+# params = {'device': 'cpu', 'dtype': torch.float32}
+params = {'device': 'cuda', 'dtype': torch.float32}
+
+# NEEDED TO USE GPU -> create all tensors on GPU 
+# torch.set_default_tensor_type('torch.cuda.FloatTensor')
 
 def main_loop():
 
     # with open('config_real.yaml') as file:
-    with open('config.yaml') as file:
+    with open('config_real.yaml') as file:
         config = yaml.load(file, Loader=yaml.FullLoader)
 
     ########################################
@@ -31,8 +35,8 @@ def main_loop():
     # ip_pc = '128.178.145.38'
     ip_pc = config["zmq"]["panda_pc_ip"]
     #ip_pc = 'localhost'
-    # socket_receive_robot = init_subscriber(context, ip_pc, 6969)
-    socket_receive_robot = init_subscriber(context, ip_pc, config["zmq"]["receive_state_port"])
+    socket_receive_robot = init_subscriber(context, ip_pc, 6969)
+    # socket_receive_robot = init_subscriber(context, '0.0.0.0', config["zmq"]["receive_state_port"])
 
     # socket to publish data to slow loop
     socket_send_state = init_publisher(context, '*', config["zmq"]["state_port"])
@@ -43,6 +47,7 @@ def main_loop():
     # initialize variables
     policy_data = None
     obs = zmq_init_recv(socket_receive_obs)
+    obs = obs.to(**params) # convert tensor to cuda device
 
 
     ########################################
@@ -128,6 +133,7 @@ def main_loop():
             mppi_step.Policy.update_with_data(policy_data)
             # [ZMQ] Receive obstacles
             obstacles_data, obs_recv_status = zmq_try_recv(mppi_step.obs, socket_receive_obs)
+            obstacles_data = obstacles_data.to(**params)  # convert tensor to cuda device
             mppi_step.update_obstacles(obstacles_data)
             # Propagate modulated DS
             mppi_step.Policy.sample_policy()    # samples a new policy using planned means and sigmas
@@ -141,7 +147,7 @@ def main_loop():
             q_des = mppi_step.q_cur + mppi_step.qdot[0, :] * dt_sim
             dq_des = mppi_step.qdot[0, :]
             mppi_step.q_cur = q_des
-            state_dict = {'q': q_des, 'dq': dq_des, 'ds_idx': mppi_step.DS_idx}
+            state_dict = {'q': q_des.cpu(), 'dq': dq_des.cpu(), 'ds_idx': mppi_step.DS_idx}
             socket_send_state.send_pyobj(state_dict)
 
             print(f"-------------- state sends status {q_des} \n \n")
