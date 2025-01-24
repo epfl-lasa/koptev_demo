@@ -51,7 +51,8 @@ class MPPI:
 
         self.basis_eye = torch.eye(self.n_dof).repeat(N_traj, 1).reshape(N_traj, self.n_dof, self.n_dof).to(**self.tensor_args).cpu()
         self.basis_eye_temp = (self.basis_eye * 0).to(**self.tensor_args).cpu()
-        self.nn_model.allocate_gradients(self.N_traj+self.Policy.N_KERNEL_MAX, self.tensor_args)
+        # self.nn_model.allocate_gradients(self.N_traj+self.Policy.N_KERNEL_MAX, self.tensor_args)
+        self.nn_model.allocate_gradients(self.N_traj*n_closest_obs, self.tensor_args)
         self.Cost = Cost(self.qf, self.dh_params)
         self.traj_range = torch.arange(self.N_traj).to(**self.tensor_args).to(torch.long)
         self.policy_upd_rate = 0.1
@@ -107,7 +108,7 @@ class MPPI:
             #distance calculation (NN)
             with record_function("TAG: evaluate NN"):
                 # evaluate NN. Calculate kernel bases on first iteration
-                distance, self.nn_grad = self.distance_repulsion_nn(q_prev, aot=True)
+                distance, self.nn_grad = self.distance_repulsion_nn(q_prev, aot=True) #deactivate aot due to torhc version making incompatible
                 self.nn_grad = self.nn_grad[0:self.N_traj, :]               # fixes issue with aot_function cache
                 # distance, self.nn_grad = self.distance_repulsion_fk(q_prev) #not implemented for Franka
 
