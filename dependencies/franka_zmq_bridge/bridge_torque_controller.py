@@ -73,7 +73,7 @@ smoothing = 0
 while True:
     robot_state = network.receive_state(subscriber)
     sim_state, sim_state_status = zmq_try_recv(None, socket_recieve_sim_state)
-    print(f"robot_state statsu {robot_state}")
+    # print(f"robot_state statsu {robot_state}")
     if sim_state_status:
         # print("Sim stuff!")
         # print(sim_state)
@@ -108,7 +108,7 @@ while True:
         # )
         # generate command
         desired_jstate.set_positions(q_desired)
-        desired_jstate.set_velocities(0 * dq_desired)
+        desired_jstate.set_velocities(dq_desired)
         desired_jstate.set_accelerations(0 * dq_desired)
         controller_compute = controller.compute_command(desired_jstate, current_jstate)
         torque_command = controller_compute.get_torques()
@@ -122,7 +122,7 @@ while True:
         #     torque_command = torque_command * 0.0
         command.joint_state.set_torques(torque_command)
         network.send_command(command, publisher)
-        time.sleep(0.00001)
+        time.sleep(0.001)
     else:
-        # print("no robot state!")
+        print("no robot state!")
         pass
