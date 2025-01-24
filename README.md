@@ -3,19 +3,19 @@
 This code comes from several repositories and has been re-structured to be used easily to start Mikhail KOPTEV's Obstacle Avoidance demo at LASA.
 
 ## Structure 
-this demo needs 3 computers : 
+This demo needs 3 computers : 
 - PANDA_PC : with RT/os, runs flwi interface and torque controller
 - RTX_PC : with good GPU, runs NN and optitrack bridge
 - Optitrack PC : Windows, runs motive and streams optitrack
 This demo uses 3 dockers :
 - franka-lightweight-interface: to be run on the computer connected to the panda (called PANDA_PC), used to communicate with the robot
 - optitrack : used to publish optitrack info using zmq, should be run on RTX_PC
-- koptev-demo : used to run all python code from Mikhail, should be run on RTX_PC (except franka_zmq_bridge which MAY need to be run on computer connected to panda)
+- koptev-demo : used to run all python code from Mikhail, should be run on RTX_PC (except franka_zmq_bridge which should run on computer connected to panda)
 
 Note : docker commands rely on [aica-docker scripts](https://github.com/aica-technology/docker-images) which should be installed on compputers sued for the demo.
 
 # Optitrack
-Need these two assets with these specifi IDs:
+Need these two assets with these specific IDs:
 - ball_koptev : ID = 1001
 - franka_base17 : ID = 1096
 To use human spehres :
@@ -32,7 +32,7 @@ Open the 3 docker containers :
 - fwli on computer connected to panda
 - optitrack and koptev-demo on RTX_PC
 
-Make sure the IP adresses are correct and communication runs smoothly. These can be checked in the ds_mppi/config.yaml file 
+Make sure the IP adresses are correct and communication runs smoothly. These can be checked in the ds_mppi/config.yaml file and in franka_zmq_bridge/bridge_torque_controller.py
 
 Then run the following commands.
 
@@ -77,7 +77,7 @@ bash docker/start-docker.sh -m connect
 cd ds_mppi/
 python3 obstacleStreamerOptitrack.py
 ```
-### Terminal 5 - Pybullet Simulation
+### Terminal 5 - Pybullet Simulation (OPTIONAL, only for visual display)
 On Panda_PC (if doesn't slow things down)
 ```console
 cd ~/Workspace/koptev_demo
@@ -95,7 +95,7 @@ cd ds_mppi/
 python3 frankaIntegratorFeedback.py
 ```
 
-### Terminal 7 - Optimization for concave obstacles 
+### Terminal 7 - Optimization for concave obstacles (OPTIONAL)
 On RTX_PC
 Planner (optim thingy) for concave obstacles -> do not launch unless you have good computer
 ```console
