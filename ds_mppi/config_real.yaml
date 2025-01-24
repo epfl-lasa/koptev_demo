@@ -57,7 +57,7 @@ planner:
 integrator:
   n_trajectories: 1
   horizon: 1
-  dt: 0.003 #0.003
+  dt: 0.003 #0.003 -> smaller makes it too slow 
   collision_threshold: 0.03
   desired_frequency: 100
 
