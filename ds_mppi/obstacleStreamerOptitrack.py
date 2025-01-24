@@ -42,6 +42,17 @@ def get_ball_pos(bodies, radius, robot_pos):
             return torch.hstack([ball_frame_corrected_final, torch.tensor(radius)])
     return torch.tensor([10, 10, 10, torch.tensor(radius)])
 
+def transform_pos_to_robot_frame(bodies, robot_pos):
+    id_list= [1001, 1002, 1003, 1004, 1005, 1006, 1007]
+    for body in bodies:
+        if body['id'] in id_list:
+            pos_corrected = body['pos'] - robot_pos
+            pos_corrected_final = torch.tensor([-pos_corrected[0],
+                                                pos_corrected[2],
+                                                pos_corrected[1]])
+            body['pos'] = pos_corrected_final
+    return bodies
+
 
 def get_human_pos(bodies, markers = None):
     ls = lambda n: torch.linspace(0, 1, n).unsqueeze(-1)
@@ -163,7 +174,7 @@ def main_loop():
     body_arr[5]['rot'] = rot0
     body_arr[5]['id'] = 1007 # left wrist
 
-
+    use_single_obstacle = True
 
     while True:
         moved = False
@@ -180,16 +191,17 @@ def main_loop():
             # print(bodies)
             # if len(bodies) > 0:
             if len(bodies) > 0:
-                if 0:
-                    human_dict, human_spheres = get_human_pos(bodies, human_dict)
+                if use_single_obstacle:
+                    robot_pos = get_robot_pos(bodies)
+                    obs[0] = get_ball_pos(bodies, 0.2, robot_pos)
+                else:
+                    robot_pos = get_robot_pos(bodies)
+                    bodies_transformed = transform_pos_to_robot_frame(bodies, robot_pos)
+                    human_dict, human_spheres = get_human_pos(bodies_transformed, human_dict)
                     n_sph = len(human_spheres)
                     if n_sph > 0:
                         obs = human_spheres
                         moved = True
-                else:
-                    robot_pos = get_robot_pos(bodies)
-                    obs[0] = get_ball_pos(bodies, 0.2, robot_pos)
-
 
                 print("BALL : ", bodies)
         socket_send_obs.send_pyobj(obs)

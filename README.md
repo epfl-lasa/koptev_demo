@@ -3,30 +3,34 @@
 This code comes from several repositories and has been re-structured to be used easily to start Mikhail KOPTEV's Obstacle Avoidance demo at LASA.
 
 ## Structure 
+this demo needs 3 computers : 
+- PANDA_PC : with RT/os, runs flwi interface and torque controller
+- RTX_PC : with good GPU, runs NN and optitrack bridge
+- Optitrack PC : Windows, runs motive and streams optitrack
 This demo uses 3 dockers :
 - franka-lightweight-interface: to be run on the computer connected to the panda (called PANDA_PC), used to communicate with the robot
-- optitrack : used to publish optitrack info using zmq, should be run on SAMURAI
-- koptev-demo : used to run all python code from Mikhail, should be run on SAMURAI (except franka_zmq_bridge which MAY need to be run on computer connected to panda)
+- optitrack : used to publish optitrack info using zmq, should be run on RTX_PC
+- koptev-demo : used to run all python code from Mikhail, should be run on RTX_PC (except franka_zmq_bridge which MAY need to be run on computer connected to panda)
 
 Note : docker commands rely on [aica-docker scripts](https://github.com/aica-technology/docker-images) which should be installed on compputers sued for the demo.
 
-## TODO 
-<<<<<<< HEAD
-- document which adresses need changing (add to config.yaml : zmq: IP: optitrack_PC, SAMURAI, panda_PC, link them in ds_mppi scripts )
-=======
-- document which adresses need changing (add to config.yaml : zmq: IP: o SAMURAI, panda_PC, link them in ds_mppi scripts )
->>>>>>> 978bdda1b912eb7ddda3c5e1725b2295ee4b07b3
-- load config.yaml in bridge_torque_controller.py (or modif code directly)
-- check if possible to run bridge_torque_controller on samurai and communicate with fwli 
-- remove config_real if not relevant
-- make docker compose ?
-
+# Optitrack
+Need these two assets with these specifi IDs:
+- ball_koptev : ID = 1001
+- franka_base17 : ID = 1096
+To use human spehres :
+- neck : ID = 1002
+- pelvis : ID = 1003
+- right_elbow : ID = 1004
+- right_wrist : ID = 1005
+- left_elbow : ID = 1006
+- left_wrist : ID = 1007
 
 ## RUN DEMO
 
 Open the 3 docker containers :
 - fwli on computer connected to panda
-- optitrack and koptev-demo on SAMURAI
+- optitrack and koptev-demo on RTX_PC
 
 Make sure the IP adresses are correct and communication runs smoothly. These can be checked in the ds_mppi/config.yaml file 
 
@@ -41,7 +45,7 @@ franka_lightweight_interface 17 panda_ --sensitivity low --joint-damping off
 ```
 
 ### Terminal 2 - Optitrack bridge
-On SAMURAI
+On RTX_PC
 ```console
 cd ~/Workspace/koptev_demo/dependencies/optitrack
 bash docker-build.sh (IF never build before)
@@ -66,7 +70,7 @@ python3 bridge_torque_controller.py
 ```
 
 ### Terminal 4 - Tracking obstacles with optitrack
-On SAMURAI
+On RTX_PC
 ```console
 cd ~/Workspace/koptev_demo
 bash docker/start-docker.sh -m connect
@@ -83,7 +87,7 @@ python3 pbSim.py
 ```
 
 ### Terminal 6 - Integrator Feedback
-On SAMURAI
+On RTX_PC
 ```console
 cd ~/Workspace/koptev_demo
 bash docker/start-docker.sh -m connect
@@ -92,7 +96,7 @@ python3 frankaIntegratorFeedback.py
 ```
 
 ### Terminal 7 - Optimization for concave obstacles 
-On SAMURAI
+On RTX_PC
 Planner (optim thingy) for concave obstacles -> do not launch unless you have good computer
 ```console
 cd ~/Workspace/koptev_demo

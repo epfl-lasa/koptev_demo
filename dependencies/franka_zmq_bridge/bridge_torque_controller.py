@@ -69,7 +69,7 @@ dq_desired = q_desired * 0
 t0 = time.time()
 max_torque = 5
 last_command_time = t0
-smoothing = 0
+smoothing = 0.2
 while True:
     robot_state = network.receive_state(subscriber)
     sim_state, sim_state_status = zmq_try_recv(None, socket_recieve_sim_state)
