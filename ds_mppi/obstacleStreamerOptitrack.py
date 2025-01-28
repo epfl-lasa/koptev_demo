@@ -203,7 +203,8 @@ def main_loop():
                         obs = human_spheres
                         moved = True
 
-                print("BALL : ", bodies)
+                # print(f"obs: {obs}")
+                # print("BALL : ", bodies)
         socket_send_obs.send_pyobj(obs)
         time.sleep(1/freq)
         N_ITER += 1
